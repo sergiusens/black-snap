@@ -1,0 +1,36 @@
+name: black
+base: core18
+summary: The uncompromising Python code formatter
+description: |
+  Black is the uncompromising Python code formatter. By using it, you
+  agree to cede control over minutiae of hand-formatting. In return,
+  Black gives you speed, determinism, and freedom from pycodestyle
+  nagging about formatting. You will save time and mental energy for
+  more important matters.
+  Blackened code looks the same regardless of the project you're
+  reading. Formatting becomes transparent after a while and you can focus
+  on the content instead.
+  Black makes code review faster by producing the smallest diffs possible.
+confinement: strict
+adopt-info: black
+
+apps:
+  black:
+    command: usr/bin/python3 $SNAP/bin/black
+    plugs:
+      - home
+    adapter: none
+    environment:
+      LANG: "C.UTF-8"
+
+parts:
+  black:
+    plugin: python
+    python-version: python3
+    source: https://github.com/python/black.git
+    override-pull: |
+      snapcraftctl pull
+      version="$(git describe --tags --always | sed -e 's/-/+git/;y/-/./')"
+      [ -n "$(echo $version | grep "+git")" ] && grade=devel || grade=stable
+      snapcraftctl set-version "$version"
+      snapcraftctl set-grade "$grade"
