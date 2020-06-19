@@ -1,5 +1,5 @@
 name: black
-base: core18
+base: core20
 summary: The uncompromising Python code formatter
 description: |
   Black is the uncompromising Python code formatter. By using it, you
@@ -16,17 +16,17 @@ adopt-info: black
 
 apps:
   black:
-    command: usr/bin/python3 $SNAP/bin/black
+    command-chain:
+      - sem-open-preload-launch
+    command: bin/black
     plugs:
       - home
-    adapter: none
     environment:
       LANG: "C.UTF-8"
 
 parts:
   black:
     plugin: python
-    python-version: python3
     source: https://github.com/python/black.git
     override-pull: |
       snapcraftctl pull
@@ -34,3 +34,6 @@ parts:
       [ -n "$(echo $version | grep "+git")" ] && grade=devel || grade=stable
       snapcraftctl set-version "$version"
       snapcraftctl set-grade "$grade"
+  sem-open-preload:
+    plugin: make
+    source: python-multiprocessing-preload
