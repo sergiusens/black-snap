@@ -21,6 +21,7 @@ apps:
     command: bin/black
     plugs:
       - home
+      - network-bind
     environment:
       LANG: "C.UTF-8"
 
