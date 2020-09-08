@@ -16,19 +16,18 @@ adopt-info: black
 
 apps:
   black:
-    command-chain:
-      - sem-open-preload-launch
     command: bin/black
     plugs:
       - home
       - network-bind
     environment:
       LANG: "C.UTF-8"
+      LD_PRELOAD: "$SNAP/libpreload-semaphores.so"
 
 parts:
   black:
-    plugin: python
     source: https://github.com/python/black.git
+    plugin: python
     override-pull: |
       snapcraftctl pull
       version="$(git describe --tags --always | sed -e 's/-/+git/;y/-/./')"
@@ -36,5 +35,6 @@ parts:
       snapcraftctl set-version "$version"
       snapcraftctl set-grade "$grade"
   sem-open-preload:
+    source: https://github.com/snapcore/snapcraft-preloads.git
+    source-subdir: semaphores
     plugin: make
-    source: python-multiprocessing-preload
