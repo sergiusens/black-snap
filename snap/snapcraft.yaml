@@ -1,5 +1,6 @@
 name: black
 base: core20
+version: 22.8.0
 summary: The uncompromising Python code formatter
 description: |
   Black is the uncompromising Python code formatter. By using it, you
@@ -14,6 +15,14 @@ description: |
 confinement: strict
 adopt-info: black
 
+architectures:
+  - amd64
+  - arm64
+  - armhf
+  - i386
+  - ppc64el
+  - s390x
+
 apps:
   black:
     command: bin/black
@@ -27,6 +36,7 @@ apps:
 parts:
   black:
     source: https://github.com/python/black.git
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
     plugin: python
     override-pull: |
       snapcraftctl pull

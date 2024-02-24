@@ -1,0 +1,31 @@
+name: Update
+
+on:
+  # Runs at 10:00 UTC every day
+  schedule:
+    - cron:  '0 10 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: 🔄 Sync version with upstream
+    environment: "Candidate Branch"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🔄 Sync version with upstream
+        uses: snapcrafters/ci/sync-version@main
+        with:
+          branch: candidate
+          token: ${{ secrets.GITHUB_TOKEN }}
+          update-script: |
+            version=$(
+              curl -sL https://api.github.com/repos/python/black/releases/latest | jq -r .tag_name
+            )
+            sed -i 's/^\(version: \).*$/\1'"${version}"'/' snap/snapcraft.yaml
